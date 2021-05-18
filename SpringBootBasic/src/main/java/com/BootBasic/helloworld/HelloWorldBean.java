@@ -1,4 +1,4 @@
-	package com.BootBasic;
+package com.BootBasic.helloworld;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
