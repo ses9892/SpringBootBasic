@@ -18,7 +18,7 @@ public class UserDaoService {
 	//관계형DB가 아니라서 데이터가 휘발성이기때문에 메모리에 저장해서 값을 유지 시키기 위함
 	static {
 		users.add(new User(1,"jinho",new Date()));
-		users.add(new User(2,"Alice",new Date()));
+		users.add(new User(2,"엘리스",new Date()));
 		users.add(new User(3,"Elena",new Date()));
 	}
 	//모든 사용자를 찾아주는 메소드
