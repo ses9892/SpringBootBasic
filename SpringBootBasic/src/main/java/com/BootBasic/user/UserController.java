@@ -4,11 +4,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,9 +26,18 @@ public class UserController {
 		
 		return service.findAll();
 	}
+	// 2XX 대 코드 ->OK  
+	// 4XX ->Client 오류
+	// 5XX ->서버측 오류
+	// 만약 사용자가 존재하지 않을경우 ? 
+	// 서버에러가아닌 200번대 코드를 받았을때 오류를 생성하게 해줘야한다. 단순히 서버오류가 아니기때문이다.
 	@GetMapping(value="/users/{id}") //우리가 int 형태로 전달을 해도 서버측에서는 String 으로 받는다.
 	public User SelectOneUsers(@PathVariable int id) {
-		return service.fineOne(id);
+		User user = service.fineOne(id);
+		if(user==null) {
+			throw new UserNotFoundException(String.format("ID[%s] not found", id));
+		}
+		return user;
 	}
 	
 	@GetMapping(value="/users/save/{id}&{name}") //우리가 int 형태로 전달을 해도 서버측에서는 String 으로 받는다.

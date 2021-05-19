@@ -4,3 +4,8 @@ server:
 logging:
   level:
     org.springframework: DEBUG
+
+spring:
+  output:
+    ansi:
+      enabled: NEVER
