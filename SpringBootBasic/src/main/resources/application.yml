@@ -9,3 +9,6 @@ spring:
   output:
     ansi:
       enabled: NEVER
+
+  messages:
+    basename: messages

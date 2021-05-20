@@ -2,6 +2,8 @@ package com.BootBasic.user;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+
 import org.springframework.stereotype.Service;
 
 //@Service or @Component 을붙여 스프링이 어노테이션을붙여놧기때문에 메핑할 수 있다.
@@ -17,9 +19,9 @@ public class UserDaoService {
 	//static을 쓰는이유 ? 
 	//관계형DB가 아니라서 데이터가 휘발성이기때문에 메모리에 저장해서 값을 유지 시키기 위함
 	static {
-		users.add(new User(1,"jinho",new Date()));
-		users.add(new User(2,"엘리스",new Date()));
-		users.add(new User(3,"Elena",new Date()));
+		users.add(new User(1,"jinho",new Date(),"pass1","970617-1021010"));
+		users.add(new User(2,"엘리스",new Date(),"pass2","970617-1111111"));
+		users.add(new User(3,"Elena",new Date(),"pass3","970617-1111121"));
 	}
 	//모든 사용자를 찾아주는 메소드
 	public ArrayList<User> findAll(){
@@ -45,5 +47,30 @@ public class UserDaoService {
 			}
 		}
 		return null;
+	}
+	//유저 한건을 지우는 메소드
+	public User deleteUserById(int id) {
+		Iterator<User> itor =  users.iterator();
+		while(itor.hasNext()) {
+			User user = itor.next();
+			if(user.getId()==id) {
+				itor.remove();
+				return user;
+			}
+		}
+		return null;
+	
+	}
+	public User updateUserById(int id) {
+		
+		for (User user : users) {
+			if(user.getId()==id) {
+				user.setName("수정된 Name 입니다");
+				return user;
+			}
+		}
+		
+		return null;
+		
 	}
 }

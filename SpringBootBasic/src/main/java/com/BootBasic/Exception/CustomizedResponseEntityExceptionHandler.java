@@ -2,8 +2,10 @@ package com.BootBasic.Exception;
 
 import java.util.Date;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +40,16 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		ExceptionResponse exceptionResponse = 
 				new ExceptionResponse(new Date(),ex.getMessage(), request.getDescription(false));
 		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.NOT_FOUND);
-		//HttpStatus.INTERNAL_SERVER_ERROR : 500번에러
-		
 	}
+	
+	//부모클래스의 기능을 오버라이드하였다.
+	@Override /*붙여주자 ^^*/
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(
+			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ExceptionResponse exceptionResponse = 
+				new ExceptionResponse(new Date(),"Validation Failed", ex.getBindingResult().toString());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+	
+		
 }
