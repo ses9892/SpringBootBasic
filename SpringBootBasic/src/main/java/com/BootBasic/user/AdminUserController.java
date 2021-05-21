@@ -57,7 +57,10 @@ public class AdminUserController {
 		mapping.setFilters(filters);
 		return mapping;
 	}
-	@GetMapping(value="/v1/users/{id}") //우리가 int 형태로 전달을 해도 서버측에서는 String 으로 받는다.
+//	@GetMapping(value="/v1/users/{id}") //우리가 int 형태로 전달을 해도 서버측에서는 String 으로 받는다.
+//	@GetMapping(value="/users/{id}",params="version=1") //파라미터로 버젼별로 요청을 받는다.
+//	@GetMapping(value="/users/{id}",headers="X-API-VERSION=1") //헤더값으로 버젼별로 요청을 받는다.
+	@GetMapping(value="/users/{id}",produces="application/vnd.company.appv1+json")	//produce = mime타입을 이용하여 요청
 	public MappingJacksonValue SelectOneUsersV1(@PathVariable int id) {
 		User user = service.fineOne(id);
 		if(user==null) {
@@ -71,7 +74,9 @@ public class AdminUserController {
 		mapping.setFilters(filters);
 		return mapping;
 	}
-	@GetMapping(value="/v2/users/{id}") //우리가 int 형태로 전달을 해도 서버측에서는 String 으로 받는다.
+//	@GetMapping(value="/users/{id}",params="version=2")
+//	@GetMapping(value="/users/{id}",headers="X-API-VERSION=2") 
+	@GetMapping(value="/users/{id}",produces="application/vnd.company.appv2+json")
 	public MappingJacksonValue SelectOneUsersV2(@PathVariable int id) {
 		User user = service.fineOne(id);
 		if(user==null) {

@@ -4,9 +4,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 import javax.validation.Valid;
 
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +22,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
+@Api("유저 컨트롤러  version=1.0")
 public class UserController {
 
 	private UserDaoService service;	//의존성주입으로사용해야한다.
@@ -27,7 +36,9 @@ public class UserController {
 	public UserController(UserDaoService service) {
 		this.service = service;
 	}
+	
 	@GetMapping(value="/users")	//Get으로 요청이 들어왔을때 처리하는 컨트롤러 메소드
+	@ApiOperation(value="모든 유저 조회",notes="모든 유저의 정보를 조회한다.")
 	public ArrayList<User> SelectAllUsers() {
 		
 		return service.findAll();
@@ -38,16 +49,20 @@ public class UserController {
 	// 만약 사용자가 존재하지 않을경우 ? 
 	// 서버에러가아닌 200번대 코드를 받았을때 오류를 생성하게 해줘야한다. 단순히 서버오류가 아니기때문이다.
 	@GetMapping(value="/users/{id}") //우리가 int 형태로 전달을 해도 서버측에서는 String 으로 받는다.
-	public User SelectOneUsers(@PathVariable int id) {
+	public Resource<User> SelectOneUsers(@PathVariable int id) {
 		User user = service.fineOne(id);
 		if(user==null) {
 			throw new UserNotFoundException(String.format("ID[%s] not found", id));
 		}
-		return user;
+		
+		//HATEOAS
+		Resource<User> resource = new Resource<>(user);
+		ControllerLinkBuilder linkTo = ControllerLinkBuilder.linkTo(
+				ControllerLinkBuilder.methodOn(this.getClass()).SelectAllUsers());
+		resource.add(linkTo.withRel("all-users"));
+		return resource;
 	}
-	
-	
-	
+
 	@PostMapping("/users")//Get이 아닌 Post로 요청이 들어왔을때 유저를 추가하는 메소드
 	//@RequestBody는 클라이언트가 전송하는 Json(application/json) 형태의 HTTP Body 내용을 Java Object로 변환시켜주는 역할
 	//Post메소드에 사용한다 .Get 메소드에 사용시 에러가난다. Json으로 받은 형태 를 추가한다.

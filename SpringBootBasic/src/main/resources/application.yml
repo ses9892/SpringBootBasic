@@ -5,10 +5,19 @@ logging:
   level:
     org.springframework: DEBUG
 
-spring:
-  output:
-    ansi:
-      enabled: NEVER
 
-  messages:
-    basename: messages
+
+messages:
+  basename: messages
+   
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        
+spring:
+  security:
+    user:
+      name: admin
+      password: 1234
